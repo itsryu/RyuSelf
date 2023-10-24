@@ -2,15 +2,14 @@ import { RyuSelf } from '../SelfClient';
 import { ListenerStructure } from '../Structures/ListenerStructure';
 import { Events } from '../Types/ClientTypes';
 
-export default class ReadyListener extends ListenerStructure {
+export default class DebugListener extends ListenerStructure {
     constructor(client: RyuSelf) {
         super(client, {
-            name: Events.Ready,
-            once: true
+            name: Events.Debug
         });
     }
 
-    eventExecute() {
-        this.client.logger.info('User connected successfully to WS', 'Ready');
+    eventExecute(message: string) {
+        this.client.logger.info(message, 'DEBUG');
     }
 }

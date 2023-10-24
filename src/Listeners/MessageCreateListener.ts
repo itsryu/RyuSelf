@@ -2,6 +2,7 @@ import { RyuSelf } from '../SelfClient';
 import { Message } from '../Classes/Message';
 import { ListenerStructure } from '../Structures/ListenerStructure';
 import { Events } from '../Types/ClientTypes';
+import { Util } from '../Utils/Util';
 
 export default class MessageCreateListener extends ListenerStructure {
     constructor(client: RyuSelf) {
@@ -10,11 +11,9 @@ export default class MessageCreateListener extends ListenerStructure {
         });
     }
 
-    eventExecute(message: Message): void {
-        if (message.author?.id !== process.env.USER_ID) return;
-
-        if (message.content === '👍🏻') {
-            message.edit('👍🏿');
+    eventExecute(message: Message) {
+        if (['ryu', 'ryuzaki', '99hz'].some((msg) => message.content?.toLowerCase().includes(msg)) || message.content?.match(Util.GetMention(process.env.USER_ID))) {
+            message.react('😉');
         }
     }
 }

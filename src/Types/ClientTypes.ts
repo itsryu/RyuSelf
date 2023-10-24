@@ -1,5 +1,5 @@
 import { GatewayIntentBits } from 'discord-api-types/v10';
-import { Client } from '../States/Client';
+import Client from '../Client/Client';
 import { Message } from '../Classes/Message';
 
 interface ClientEvents {
@@ -11,7 +11,7 @@ interface ClientEvents {
 }
 
 interface ClientOptions {
-    intents: GatewayIntentBits[]
+    intents?: GatewayIntentBits[];
 }
 
 export enum Events {

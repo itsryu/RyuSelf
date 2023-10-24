@@ -3,7 +3,8 @@
         "target": "es2022",
         "module": "commonjs",
         "lib": [
-            "DOM"
+            "DOM",
+            "ES2022"
         ],
         "esModuleInterop": true,
         "sourceMap": true,
@@ -15,7 +16,6 @@
         "noImplicitReturns": false,
         "noImplicitThis": true,
         "noUnusedLocals": true,
-        "noUnusedParameters": true,
         "strictFunctionTypes": true,
         "strictNullChecks": true,
         "strictPropertyInitialization": true,

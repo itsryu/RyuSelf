@@ -3,10 +3,7 @@ import { type RESTPostAPIChatInputApplicationCommandsJSONBody } from 'discord-ap
 
 interface RawCommandData extends RESTPostAPIChatInputApplicationCommandsJSONBody {
     name: string;
-    aliases: {
-        'pt-BR': string[],
-        'en-US': string[]
-    };
+    aliases:  string[];
     config: {
         devOnly: boolean,
     };

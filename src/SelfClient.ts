@@ -1,18 +1,24 @@
 
 import { readdirSync } from 'fs';
-import { Client } from './States/Client';
-import { ClientOptions } from './Types/ClientTypes';
+import Client from './Client/Client';
+import { ClientEvents, ClientOptions } from './Types/ClientTypes';
 import { join } from 'path';
 import { ListenerStructure } from './Structures/ListenerStructure';
+import { Logger } from './Utils/Util';
 
-export class RyuSelf extends Client{
+export class RyuSelf extends Client {
+    logger: Logger = new Logger();
+
     constructor(options: ClientOptions) {
         super(options);
     }
 
-    initialize() {
-        this.loadEvents();
+    async initialize() {
+        await this.loadEvents();
         super.login(process.env.USER_TOKEN);
+
+        process.on('uncaughtException', (err: Error) => this.logger.error((err as Error).stack as string, 'uncaughtException'));
+        process.on('unhandledRejection', (err: Error) => this.logger.error((err as Error).stack as string, 'unhandledRejection'));
     }
 
     private async loadEvents(): Promise<void> {
@@ -24,8 +30,8 @@ export class RyuSelf extends Client{
                 const event = new EventClass(this);
 
                 return event.options.once
-                    ? this.once(event.options.name, (...args) => event.eventExecute(...args))
-                    : this.on(event.options.name, (...args) => event.eventExecute(...args));
+                    ? this.ws.once(event.options.name, (...args) => event.eventExecute(...args as ClientEvents[keyof ClientEvents]))
+                    : this.ws.on(event.options.name, (...args) => event.eventExecute(...args as ClientEvents[keyof ClientEvents]));
             })
         );
 
