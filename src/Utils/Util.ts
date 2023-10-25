@@ -1,5 +1,6 @@
 import * as winston from 'winston';
 import { Collection } from '../Classes/Collection';
+import { SendRateLimitState } from '../Types/ClientTypes';
 
 enum LogLevel {
     DEBUG = 'debug',
@@ -61,6 +62,13 @@ class Logger {
 class Util {
     public static GetMention(id: string): RegExp {
         return new RegExp(`^<@!?${id}>( |)$`);
+    }
+
+    public static getInitialSendRateLimitState(): SendRateLimitState {
+        return {
+            remaining: 120,
+            resetAt: Date.now() + 60_000
+        };
     }
 
     /**

@@ -1,6 +1,6 @@
 import EventEmitter from 'node:events';
-import ErrorCodes from './errors/ErrorCodes';
-import Errors from './errors/Errors';
+import ErrorCodes from './Error/ErrorCodes';
+import Errors from './Error/Errors';
 import { Util } from '../Utils/Util';
 
 /**

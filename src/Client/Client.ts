@@ -1,19 +1,19 @@
 
 import { Snowflake } from 'discord-api-types/globals';
-import Socket from '../States/Socket';
+import { WebSocketManager } from './WebSocket/WebSocketManager';
 import { ClientOptions } from '../Types/ClientTypes';
 import Events from '../Utils/Events';
 import BaseClient from './BaseClient';
-import ErrorCodes from './errors/ErrorCodes';
-import Errors from './errors/Errors';
-import { Status } from '../Utils/Status';
+import ErrorCodes from './Error/ErrorCodes';
+import Errors from './Error/Errors';
+import { WebSocketShardStatus } from '../Types/GatewayTypes';
 
 /**
  * The main hub for interacting with the Discord API, and the starting point for any bot.
  * @extends {BaseClient}
  */
-class Client extends BaseClient {
-    ws!: Socket;
+export class Client extends BaseClient {
+    ws!: WebSocketManager;
     token?: string | null;
     readyTimestamp: number | null;
     options!: ClientOptions;
@@ -32,7 +32,7 @@ class Client extends BaseClient {
         * The WebSocket manager of the client
         * @type {WebSocketManager}
         */
-        this.ws = new Socket(this);
+        this.ws = new WebSocketManager(this);
 
         if (!this.token && 'DISCORD_TOKEN' in process.env) {
             /**
@@ -54,12 +54,12 @@ class Client extends BaseClient {
     }
 
     /**
-   * Returns whether the client has logged in, indicative of being able to access
-   * properties such as `user` and `application`.
-   * @returns {boolean}
-   */
+    * Returns whether the client has logged in, indicative of being able to access
+    * properties such as `user` and `application`.
+    * @returns {boolean}
+    */
     isReady() {
-        return this.ws.status === Status.Ready;
+        return this.ws.status === WebSocketShardStatus.Ready;
     }
 
     /**
@@ -73,20 +73,20 @@ class Client extends BaseClient {
         if (!token || typeof token !== 'string') throw new Errors.DiscordjsError(ErrorCodes.TokenInvalid);
 
         this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
-        this.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
+        
+        this.ws.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
+        this.ws.emit(Events.Debug, 'Preparing to connect to the gateway...');
 
-        this.emit(Events.Debug, 'Preparing to connect to the gateway...');
-
-        this.ws.connect();
+        this.ws.internalConnection();
         return this.token;
     }
 
     /**
-   * Partially censored client token for debug logging purposes.
-   * @type {?string}
-   * @readonly
-   * @private
-   */
+     * Partially censored client token for debug logging purposes.
+    * @type {?string}
+    * @readonly
+    * @private
+    */
     private get _censoredToken() {
         if (!this.token) return null;
 
@@ -97,23 +97,21 @@ class Client extends BaseClient {
     }
 
     /**
-   * Time at which the client was last regarded as being in the {@link Status.Ready} state
-   * (each time the client disconnects and successfully reconnects, this will be overwritten)
-   * @type {?Date}
-   * @readonly
-   */
+    * Time at which the client was last regarded as being in the {@link Status.Ready} state
+    * (each time the client disconnects and successfully reconnects, this will be overwritten)
+    * @type {?Date}
+    * @readonly
+    */
     get readyAt() {
         return this.readyTimestamp && new Date(this.readyTimestamp);
     }
 
     /**
-   * How long it has been since the client last entered the {@link Status.Ready} state in milliseconds
-   * @type {?number}
-   * @readonly
-   */
+    * How long it has been since the client last entered the {@link Status.Ready} state in milliseconds
+    * @type {?number}
+    * @readonly
+    */
     get uptime() {
         return this.readyTimestamp && Date.now() - this.readyTimestamp;
     }
 }
-
-export = Client;

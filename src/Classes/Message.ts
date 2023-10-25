@@ -1,9 +1,9 @@
-import { type Snowflake, APIMessage, MessageType } from 'discord-api-types/v10';
+import { type Snowflake, APIMessage, MessageType, APIUser } from 'discord-api-types/v10';
 import Base from './Base';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { NonSystemMessageTypes } from '../Utils/Constants';
-import Socket from '../States/Socket';
 import { MessageReference } from '../Types';
+import { Client } from '../Client/Client';
 
 /**
  * Represents a message on Discord.
@@ -22,9 +22,10 @@ export class Message extends Base {
     position?: number | null;
     reference!: MessageReference | null;
     editedTimestamp!: number | null;
+    author!: APIUser | null;
 
 
-    constructor(client: Socket, data: APIMessage) {
+    constructor(client: Client, data: APIMessage) {
         super(client);
 
         /**
@@ -48,6 +49,16 @@ export class Message extends Base {
          * @type {number}
          */
         this.createdTimestamp = DiscordSnowflake.timestampFrom(this.id);
+
+        if ('author' in data) {
+            /**
+             * The author of the message
+             * @type {?User}
+             */
+            this.author = data.author;
+        } else {
+            this.author ??= null;
+        }
 
         if ('type' in data) {
             /**
@@ -146,6 +157,7 @@ export class Message extends Base {
          * @property {?Snowflake} guildId The guild's id the message was referenced
          * @property {?Snowflake} messageId The message's id that was referenced
          */
+
         if ('message_reference' in data) {
             /**
              * Message reference data

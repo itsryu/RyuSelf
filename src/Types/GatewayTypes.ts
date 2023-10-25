@@ -1,7 +1,14 @@
 export type Snowflake = string | number
 export type PresenceStatus = 'online' | 'dnd' | 'idle' | 'invisible' | 'offline'
 
-declare enum WebSocketEvents {
+export enum WebSocketShardStatus {
+	Idle,
+	Connecting,
+	Resuming,
+	Ready,
+}
+
+export enum WebSocketEvents {
     Closed = 'closed',
     Debug = 'debug',
     Dispatch = 'dispatch',
@@ -10,6 +17,13 @@ declare enum WebSocketEvents {
     Hello = 'hello',
     Ready = 'ready',
     Resumed = 'resumed'
+}
+export interface SessionInfo {
+	resumeURL: string;
+	sequence: number;
+	sessionId: string;
+	shardCount: number;
+	shardId: number;
 }
 
 enum Operation {
@@ -179,6 +193,5 @@ export {
     Presence,
     SocketEvent,
     User,
-    GatewayIdentify,
-    WebSocketEvents
+    GatewayIdentify
 };

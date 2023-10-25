@@ -28,6 +28,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
+    "@sapphire/async-queue": "^1.5.0",
     "@sapphire/snowflake": "^3.5.1",
     "discord-api-types": "0.37.37",
     "dotenv": "^16.0.3",

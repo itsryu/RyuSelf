@@ -1,5 +1,5 @@
 import { GatewayIntentBits } from 'discord-api-types/v10';
-import Client from '../Client/Client';
+import { Client } from '../Client/Client';
 import { Message } from '../Classes/Message';
 
 interface ClientEvents {
@@ -10,8 +10,14 @@ interface ClientEvents {
     ready: [client: Client];
 }
 
+export interface SendRateLimitState {
+	remaining: number;
+	resetAt: number;
+}
+
 interface ClientOptions {
     intents?: GatewayIntentBits[];
+    waitGuildTimeout?: number;
 }
 
 export enum Events {

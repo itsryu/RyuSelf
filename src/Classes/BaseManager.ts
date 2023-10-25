@@ -1,6 +1,4 @@
-'use strict';
-
-import Client from '../Client/Client';
+import { Client } from '../Client/Client';
 
 /**
  * Manages the API methods of a data model.
