@@ -1,5 +1,5 @@
 import { type Snowflake, APIMessage, MessageType, APIUser } from 'discord-api-types/v10';
-import Base from './Base';
+import { Base} from './Base';
 import { DiscordSnowflake } from '@sapphire/snowflake';
 import { NonSystemMessageTypes } from '../Utils/Constants';
 import { MessageReference } from '../Types';
@@ -23,7 +23,6 @@ export class Message extends Base {
     reference!: MessageReference | null;
     editedTimestamp!: number | null;
     author!: APIUser | null;
-
 
     constructor(client: Client, data: APIMessage) {
         super(client);
@@ -173,7 +172,7 @@ export class Message extends Base {
         }
     }
 
-    public async reply(content: string): Promise<void> {
+    public async reply(content: string): Promise<Message> {
         const response = await fetch(`https://discord.com/api/v10/channels/${this.channelId}/messages`, {
             method: 'POST',
             headers: {
@@ -191,6 +190,8 @@ export class Message extends Base {
 
         if (!response.ok) {
             throw new Error('Something went wrong');
+        } else {
+            return this;
         }
     }
 

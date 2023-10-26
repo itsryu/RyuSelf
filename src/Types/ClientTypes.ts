@@ -3,7 +3,7 @@ import { Client } from '../Client/Client';
 import { Message } from '../Classes/Message';
 
 interface ClientEvents {
-    debug: [message: string];
+    debug: [{ message: string }];
     warn: [message: string];
     error: [error: Error];
     messageCreate: [message: Message];
@@ -11,12 +11,13 @@ interface ClientEvents {
 }
 
 export interface SendRateLimitState {
-	remaining: number;
-	resetAt: number;
+    remaining: number;
+    resetAt: number;
 }
 
 interface ClientOptions {
     intents?: GatewayIntentBits[];
+    shards?: number | number[];
     waitGuildTimeout?: number;
 }
 

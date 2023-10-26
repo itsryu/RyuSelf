@@ -9,7 +9,7 @@ export default class DebugListener extends ListenerStructure {
         });
     }
 
-    eventExecute(message: string) {
-        this.client.logger.info(message, 'DEBUG');
+    eventExecute({ message }: { message: string }) {
+        this.client.logger.warn(message, 'DEBUG');
     }
 }

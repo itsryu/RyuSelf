@@ -4,7 +4,7 @@ import { Client } from '../Client/Client';
  * Manages the API methods of a data model.
  * @abstract
  */
-class BaseManager {
+export class BaseManager {
     client!: Client;
 
     constructor(client: Client) {
@@ -17,5 +17,3 @@ class BaseManager {
         Object.defineProperty(this, 'client', { value: client });
     }
 }
-
-export = BaseManager

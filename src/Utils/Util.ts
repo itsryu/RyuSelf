@@ -72,6 +72,24 @@ class Util {
     }
 
     /**
+    * Lazy is a wrapper around a value that is computed lazily. It is useful for
+    * cases where the value is expensive to compute and the computation may not
+    * be needed at all.
+    *
+    * @param cb - The callback to lazily evaluate
+    * @typeParam T - The type of the value
+    * @example
+     * ```ts
+    * const value = lazy(() => computeExpensiveValue());
+    * ```
+    */
+    public static lazy<T>(cb: () => T): () => T {
+        let defaultValue: T;
+        return () => (defaultValue ??= cb());
+    }
+
+
+    /**
     * Flatten an object. Any properties that are collections will get converted to an array of keys.
     * @param {Object} obj The object to flatten.
     * @param {...Object<string, boolean|string>} [props] Specific properties to include/exclude.

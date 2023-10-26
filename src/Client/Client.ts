@@ -2,7 +2,6 @@
 import { Snowflake } from 'discord-api-types/globals';
 import { WebSocketManager } from './WebSocket/WebSocketManager';
 import { ClientOptions } from '../Types/ClientTypes';
-import Events from '../Utils/Events';
 import BaseClient from './BaseClient';
 import ErrorCodes from './Error/ErrorCodes';
 import Errors from './Error/Errors';
@@ -74,8 +73,8 @@ export class Client extends BaseClient {
 
         this.token = token = token.replace(/^(Bot|Bearer)\s*/i, '');
         
-        this.ws.emit(Events.Debug, `Provided token: ${this._censoredToken}`);
-        this.ws.emit(Events.Debug, 'Preparing to connect to the gateway...');
+        this.ws.debug([`Provided token: ${this._censoredToken}`]);
+        this.ws.debug(['Preparing to connect to the gateway...']);
 
         this.ws.internalConnection();
         return this.token;

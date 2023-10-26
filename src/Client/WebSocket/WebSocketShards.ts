@@ -93,11 +93,11 @@ export class WebSocketShard extends EventEmitter {
 
     /**
      * Emits a debug event.
-     * @param {string} message The debug message
+     * @param {string[]} message The debug message
      * @private
      */
-    private debug(message) {
-        this.manager.debug(message, this.id);
+    private debug(message: [string, ...string[]]) {
+        this.manager.debug(message);
     }
 
     /**
@@ -118,10 +118,10 @@ export class WebSocketShard extends EventEmitter {
             wasClean: false
         }
     ) {
-        this.debug(`[CLOSE]
+        this.debug([`[CLOSE]
     Event Code: ${event.code}
     Clean     : ${event.wasClean}
-    Reason    : ${event.reason ?? 'No reason received'}`);
+    Reason    : ${event.reason ?? 'No reason received'}`]);
         /**
          * Emitted when a shard's WebSocket closes.
          * @private
@@ -138,7 +138,7 @@ export class WebSocketShard extends EventEmitter {
      */
     onReadyPacket(packet) {
         if (!packet) {
-            this.debug(`Received broken packet: '${packet}'.`);
+            this.debug([`Received broken packet: '${packet}'.`]);
             return;
         }
 
@@ -175,7 +175,7 @@ export class WebSocketShard extends EventEmitter {
         }
         // Step 1. If we don't have any other guilds pending, we are ready
         if (!this.expectedGuilds.size) {
-            this.debug('Shard received all its guilds. Marking as fully ready.');
+            this.debug(['Shard received all its guilds. Marking as fully ready.']);
             this.status = Status.Ready;
 
             /**
@@ -201,9 +201,9 @@ export class WebSocketShard extends EventEmitter {
         this.readyTimeout = setTimeout(
             () => {
                 this.debug(
-                    `Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
+                    [`Shard ${hasGuildsIntent ? 'did' : 'will'} not receive any more guild packets` +
                     `${hasGuildsIntent ? ` in ${waitGuildTimeout} ms` : ''}.\nUnavailable guild count: ${this.expectedGuilds.size
-                    }`
+                    }`]
                 );
 
                 this.readyTimeout = null;

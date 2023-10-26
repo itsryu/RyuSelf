@@ -1,3 +1,5 @@
+import { GatewayDispatchEvents, GatewayOpcodes } from 'discord-api-types/v10';
+
 export type Snowflake = string | number
 export type PresenceStatus = 'online' | 'dnd' | 'idle' | 'invisible' | 'offline'
 
@@ -6,6 +8,24 @@ export enum WebSocketShardStatus {
 	Connecting,
 	Resuming,
 	Ready,
+}
+
+export interface WebSocketShardDestroyOptions {
+	code?: number;
+	reason?: string;
+	recover?: WebSocketShardDestroyRecovery;
+}
+
+export interface SessionInfo {
+	resumeURL: string;
+	sequence: number;
+	sessionId: string;
+	shardId: number;
+}
+
+export enum WebSocketShardDestroyRecovery {
+	Reconnect,
+	Resume,
 }
 
 export enum WebSocketEvents {
@@ -18,37 +38,8 @@ export enum WebSocketEvents {
     Ready = 'ready',
     Resumed = 'resumed'
 }
-export interface SessionInfo {
-	resumeURL: string;
-	sequence: number;
-	sessionId: string;
-	shardCount: number;
-	shardId: number;
-}
 
-enum Operation {
-    Event,
-    Dispatch = 0,
-    Heartbeat = 1,
-    Identify = 2,
-    PresenceUpdate = 3,
-    VoiceStateUpdate = 4,
-    Resume = 6,
-    Reconnect = 7,
-    RequestGuildMembers = 8,
-    InvalidSession = 9,
-    Hello = 10,
-    HeartbeatACK = 11,
-}
-
-enum EventType {
-    PRESENCE_UPDATE = 'PRESENCE_UPDATE',
-    READY = 'READY',
-    GUILD_MEMBERS_CHUNK = 'GUILD_MEMBERS_CHUNK',
-    MESSAGE_CREATE = 'MESSAGE_CREATE'
-}
-
-interface User {
+export interface User {
     id: string;
     username: string;
     discriminator: string;
@@ -59,12 +50,12 @@ interface User {
     display_name: null | string;
 }
 
-interface ActivityTimestamps {
+export interface ActivityTimestamps {
     start?: number
     end?: number
 }
 
-enum ActivityTypes {
+export enum ActivityTypes {
     Playing,
     Streaming,
     Listening,
@@ -73,7 +64,7 @@ enum ActivityTypes {
     Competing,
 }
 
-enum ActivityFlags {
+export enum ActivityFlags {
     Instance = 1 << 0,
     Join = 1 << 1,
     Spectate = 1 << 2,
@@ -85,36 +76,36 @@ enum ActivityFlags {
     Embedded = 1 << 8,
 }
 
-interface ActivitySecrets {
+export interface ActivitySecrets {
     join?: string
     spectate?: string
     match?: string
 }
 
-interface ActivityParty {
+export interface ActivityParty {
     id?: string
     size?: [number, number]
 }
 
-interface ActivityAssets {
+export interface ActivityAssets {
     large_image?: string
     large_text?: string
     small_image?: string
     small_text?: string
 }
 
-interface Emoji {
+export interface Emoji {
     name: string
     id?: Snowflake
     animated?: boolean
 }
 
-interface Button {
+export interface Button {
     label: string
     url: string
 }
 
-interface Activity {
+export interface Activity {
     name: string
     type: ActivityTypes
     id: string
@@ -135,12 +126,12 @@ interface Activity {
     sync_id?: string
 }
 
-interface ClientStatus {
+export interface ClientStatus {
     mobile?: PresenceStatus
     desktop?: PresenceStatus
 }
 
-interface Presence {
+export interface Presence {
     user: User
     status: PresenceStatus
     guild_id: Snowflake
@@ -148,26 +139,32 @@ interface Presence {
     client_status: ClientStatus
 }
 
-type SocketEvent = {
-    op: Operation
-    t?: EventType
-    d: Presence | any
+export enum CloseCodes {
+	Normal = 1_000,
+	Resuming = 4_200,
 }
 
-interface IdentifyProperties {
+export type SocketEvent = {
+    op: GatewayOpcodes;
+    t?: GatewayDispatchEvents
+    d: Presence | any
+    s: number;
+}
+
+export interface IdentifyProperties {
     os: string
     browser: string
     device: string
 }
 
-interface PresenceStructure {
+export interface PresenceStructure {
     since: number | null
     activities: Activity[]
     status: PresenceStatus
     afk: boolean
 }
 
-interface GatewayIdentify {
+export interface GatewayIdentify {
     token: string
     properties: IdentifyProperties
     compress?: boolean
@@ -176,22 +173,3 @@ interface GatewayIdentify {
     presence?: PresenceStructure
     intents: number
 }
-
-export {
-    Activity,
-    ActivityAssets,
-    ActivityFlags,
-    ActivityParty,
-    ActivitySecrets,
-    ActivityTimestamps,
-    ActivityTypes,
-    Button,
-    ClientStatus,
-    Emoji,
-    EventType,
-    Operation,
-    Presence,
-    SocketEvent,
-    User,
-    GatewayIdentify
-};

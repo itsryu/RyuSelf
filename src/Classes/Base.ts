@@ -4,7 +4,7 @@ import { Client } from '../Client/Client';
  * Represents a data model that is identifiable by a Snowflake (i.e. Discord API data models).
  * @abstract
  */
-class Base {
+export class Base {
     client!: Client;
 
     constructor(client: Client) {
@@ -21,5 +21,3 @@ class Base {
         return Object.assign(Object.create(this), this);
     }
 }
-
-export = Base;
